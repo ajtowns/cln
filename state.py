@@ -21,6 +21,8 @@ for l in open("STATES").readlines():
     if m:
         inp, new_st, out = m.group(1), m.group(2), m.group(4)
         trans.append((base_state, new_st, inp, out))
+        continue
+    print "ERROR: could not parse %s" % (l,)
 
 states = set()
 for t in trans:
@@ -60,7 +62,7 @@ class Subgraph:
     def out(self, t, first=False):
         ext = "_O" if first else ""
         lbl = "<%s" % (t[2],)
-        if len(t) == 4:
+        if len(t) == 4 and t[3] is not None:
             lbl += "\\n>%s" % (t[3],)
 
         i = "%s_%d%s" % (t[0], self.count, ext)
