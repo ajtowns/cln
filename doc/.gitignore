@@ -5,3 +5,5 @@
 *.log
 *.out
 *.tex
+onion-*.eps
+onion-*.svg

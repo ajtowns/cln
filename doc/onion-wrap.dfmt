@@ -1,0 +1,87 @@
+.EQ
+.EN
+.begin dformat
+style bitwid 0.08
+style charwid 0
+style recspread 0.3
+
+Inner Onion
+  X:    --8 Hop
+        --8 Hop
+        --8 Hop
+        --22-dashed ...
+  Y:    --8 Hop
+
+Interpret
+  C1:   192B--8 Padding
+        --7-invis
+  C2:   --32-dotted Inner layer
+
+pic line -> from X.s to C1.n
+pic line dashed from X.se to C2.nw
+pic line dashed from Y.se to C2.ne
+
+Drop padding
+        --7-invis
+  B1:   --32-dotted Inner layer
+
+pic line -> from C2.s to B1.n
+
+Add message
+  A1a:  --32-dotted Inner layer
+        --2-invis
+  A2a:  128B--16 Message
+
+pic line -> from B1.s to A1a.n
+
+Encrypt
+  A1b:  --32-dotted Inner layer (wrapped)
+        --2-invis
+  A2b:  128B--16 Encrypted Message
+
+pic line -> dotted from A1a.s to A1b.n
+pic line -> dotted from A2a.s to A2b.n
+
+Add key
+  A1c:  --32-dotted Inner layer (wrapped)
+        --2-invis
+  A2c:  128B--16 Encrypted Message
+  A3c:   32B--8 Public key
+
+pic line -> from A1b.s to A1c.n
+pic line -> from A2b.s to A2c.n
+
+Add HMAC
+  A1:   --32-dotted Inner layer (wrapped)
+        --2-invis
+  A2:   128B--16 Encrypted Message
+  A3:   32B--8 Public key
+  A4:   32B--8 HMAC
+
+pic line -> from A1c.s to A1.n
+pic line -> from A2c.s to A2.n
+pic line -> from A3c.s to A3.n
+
+Overview
+         --7-invis
+  F:     --32-dotted Inner layer (wrapped)
+         --7-invis
+  H:    192B--8 Hop
+
+pic line -> from A1.s to F.n
+pic line dashed from A2.sw to H.nw
+pic line dashed from A4.se to H.ne
+
+Outer Onion
+  Fa:   --8 Hop
+        --8 Hop
+        --8 Hop
+        --22-dashed ...
+  Ha:   --8 Hop
+
+pic line dashed from F.sw to Fa.nw
+pic line dashed from F.se to Ha.nw
+pic line dashed from H.sw to Ha.nw
+pic line dashed from H.se to Ha.ne
+
+.end

@@ -1,0 +1,154 @@
+.EQ
+.EN
+.begin dformat
+style bitwid 0.08
+style charwid 0
+style recspread 0.3
+
+Initial padding
+        --48-invis
+  A1:    192B--8 P 1
+
+Decryption
+        --48-invis
+  B1:    192B--8 P 1/1
+
+pic line -> dotted from A1.s to B1.n " AES dec, key 2, msg iv" ljust
+
+Add padding
+        --40-invis
+  C2:    192B--8 P 2
+  C1:    192B--8 P 1/1
+
+pic line -> from B1.s to C1.n
+
+Decryption
+        --40-invis
+  D2:    192B--8 P 2/1
+  D1:    192B--8 P 1/2
+
+pic line -> dotted from C1.s to D1.n " AES dec, key 3, msg iv" ljust
+pic line -> dotted from C2.s to D2.n
+
+Repeat
+        --10-invis
+  En2:   192B--8 P n-2/1
+        --22-dashed ...
+  E2:    192B--8 P 2/n-3
+  E1:    192B--8 P 1/n-2
+
+pic line -> dotted from D1.s to E1.n " ... AES dec, key n-1, msg iv" ljust
+pic line -> dotted from D2.s to E2.n
+
+Add message
+        --10-invis
+  Fn2:   192B--8 P n-2/1
+        --22-dashed ...
+  F2:    192B--8 P 2/n-3
+  F1:    192B--8 P 1/n-2
+        --2-invis
+  Fm:    128B--16 Message
+
+pic line -> from E1.s to F1.n
+pic line -> from E2.s to F2.n
+pic line -> from En2.s to Fn2.n
+
+Dummy padding
+  Gn:    192B--8 0000
+        --2-invis
+  Gn2:   192B--8 P n-2/1
+        --22-dashed ...
+  G2:    192B--8 P 2/n-3
+  G1:    192B--8 P 1/n-2
+        --2-invis
+  Gm:    128B--16 Message
+
+pic line -> from F1.s to G1.n
+pic line -> from F2.s to G2.n
+pic line -> from Fn2.s to Gn2.n
+pic line -> from Fm.s to Gm.n
+
+Encrypt
+  Hn:    192B--8 Garbage
+        --2-invis
+  Hn2:   192B--8 X n-2/1
+        --22-dashed ...
+  H2:    192B--8 X 2/n-3
+  H1:    192B--8 X 1/n-2
+        --2-invis
+  Hm:  128B--16 Encrypted Message
+
+pic line -> dotted from G1.s to H1.n
+pic line -> dotted from G2.s to H2.n
+pic line -> dotted from Gn.s to Hn.n
+pic line -> dotted from Gn2.s to Hn2.n
+pic line -> dotted from Gm.s to Hm.n " AES enc, key n, msg iv" ljust
+
+Correct padding
+  In:    192B--8 P n-1
+        --2-invis
+  In2:   192B--8 X n-2/1
+        --22-dashed ...
+  I2:    192B--8 X 2/n-3
+  I1:    192B--8 X 1/n-2
+        --2-invis
+  Im:  128B--16 Encrypted Message
+
+pic line -> from H1.s to I1.n
+pic line -> from H2.s to I2.n
+pic line -> from Hn2.s to In2.n
+pic line -> from Hm.s to Im.n
+
+Add key
+  Jn:    192B--8 P n-1
+        --2-invis
+  Jn2:   192B--8 X n-2/1
+        --22-dashed ...
+  J2:    192B--8 X 2/n-3
+  J1:    192B--8 X 1/n-2
+        --2-invis
+  Jm:  128B--16 Encrypted Message
+  Jk:   32B--8 Public key
+
+pic line -> from I1.s to J1.n
+pic line -> from I2.s to J2.n
+pic line -> from In2.s to Jn2.n
+pic line -> from In.s to Jn.n
+pic line -> from Im.s to Jm.n
+
+Add HMAC
+  Kn:    192B--8 P n-1
+        --2-invis
+  Kn2:   192B--8 X n-2/1
+        --22-dashed ...
+  K2:    192B--8 X 2/n-3
+  K1:    192B--8 X 1/-2
+        --2-invis
+  Km:  128B--16 Encrypted Message
+  Kk:   32B--8 Public key
+  Kh:   32B--8 HMAC
+
+pic line -> from J1.s to K1.n
+pic line -> from J2.s to K2.n
+pic line -> from Jn2.s to Kn2.n
+pic line -> from Jn.s to Kn.n
+pic line -> from Jm.s to Km.n
+pic line -> from Jk.s to Kk.n
+
+Innermost Onion
+        --2-invis
+  Ln:   --8 Hop
+  Ln2:  --8 Hop
+        --22-dashed ...
+  L2:   --8 Hop
+  L1:   --8 Hop
+  L:    --8 Hop
+
+pic line -> from K1.s to L1.n
+pic line -> from K2.s to L2.n
+pic line -> from Kn2.s to Ln2.n
+pic line -> from Kn.s to Ln.n
+pic line dashed from Km.sw to L.nw
+pic line dashed from Kh.se to L.ne
+
+.end

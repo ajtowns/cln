@@ -1,0 +1,33 @@
+.EQ
+.EN
+.begin dformat
+style bitwid 0.08
+style charwid 0
+style recspread 0.3
+Sender has
+  H:    --18 Hop's public key
+        --18-invis
+  Ts:   --18 Single-use secret key
+  Tp:   --18-dotted Single-use public key
+
+ECDH secret
+        --16-invis
+  Y:    --18 ECDH y
+  INV:  --4-invis
+  X:    --18 ECDH x
+
+Recipient has
+  P:    --18-dotted Hop's public key
+  S:    --18 Hop's secret key
+        --18-invis
+  T:    --18 Single-use public key
+
+pic line dashed from S.n to INV.s
+pic line dashed from T.n to INV.s
+pic line dashed from H.s to INV.n
+pic line dashed from Ts.s to INV.n
+
+pic line -> dotted from P.n to H.s
+pic line -> dotted from Tp.s to T.n
+
+.end

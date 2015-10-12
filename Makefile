@@ -84,6 +84,13 @@ CCAN_EXTRA_OBJS :=				\
 
 CDUMP_OBJS := ccan-cdump.o ccan-strmap.o
 
+DOC_ONION_DIAG :=				\
+	doc/onion-ecdh.dfmt			\
+	doc/onion-secrets.dfmt			\
+	doc/onion-wrap.dfmt			\
+	doc/onion-unwrap.dfmt			\
+	doc/onion-init.dfmt
+
 PROGRAMS := $(TEST_CLI_PROGRAMS) $(TEST_PROGRAMS)
 
 HEADERS := $(filter-out gen_*, $(wildcard *.h)) $(wildcard bitcoin/*.h) gen_state_names.h
@@ -153,6 +160,21 @@ doc/deployable-lightning.tex: doc/deployable-lightning.lyx
 	lyx -E latex $@ $<
 
 state-diagrams: doc/normal-states.svg doc/simplified-states.svg doc/error-states.svg doc/full-states.svg
+
+%.dvi: %.dfmt
+	doc/dformat.awk < $< | groff -p -T dvi -- > $@
+%.ps: %.dfmt
+	doc/dformat.awk < $< | groff -p -- > $@
+%.eps: %.ps
+	ps2epsi $< $@
+%.svg: %.dvi
+	dvisvgm $< --no-fonts -s > $@
+
+doc/onion.pdf: doc/onion.lyx $(DOC_ONION_DIAG:.dfmt=.eps)
+	lyx -E pdf $@ $<
+
+doc-onion-svg: $(DOC_ONION_DIAG:.dfmt=.svg)
+doc-onion-eps: $(DOC_ONION_DIAG:.dfmt=.eps)
 
 %.svg: %.dot
 	dot -Tsvg $< > $@ || (rm -f $@; false)

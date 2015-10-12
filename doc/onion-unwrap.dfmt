@@ -1,0 +1,75 @@
+.EQ
+.EN
+.begin dformat
+style bitwid 0.08
+style charwid 0
+style recspread 0.3
+Incoming Onion
+        --6-invis
+  Fa:   --8 Hop
+        --8 Hop
+        --8 Hop
+        --24-dashed ...
+  Ha:   --8 Hop
+
+Our packet
+         --4-invis
+  F:     --48-dotted Inner layer
+         --4-invis
+  H:    192B--8 Hop
+
+pic line dashed from Fa.sw to F.nw
+pic line dashed from Ha.sw to F.ne
+pic line dashed from Ha.sw to H.nw
+pic line dashed from Ha.se to H.ne
+
+Current Hop
+  A1:   --32-dotted Inner layer
+        --2-invis
+  A2:   128B--16 Encrypted Message
+  A3:   32B--8 Public key
+  A4:   32B--8 HMAC
+
+pic line -> from F.s to A1.n
+pic line dashed from H.sw to A2.nw
+pic line dashed from H.se to A4.ne
+
+HMAC check
+  A1a:  --32-dotted Inner layer
+        --2-invis
+  A2a:  128B--16 Encrypted Message
+  A3a:   32B--8 Public key
+
+pic line -> from A1.s to A1a.n
+pic line -> from A2.s to A2a.n
+pic line -> from A3.s to A3a.n
+
+Decrypted
+  B1:   --32-dotted Inner layer (unwrapped)
+        --2-invis
+  B2:   128B--16 Message
+
+pic line -> dotted from A1a.s to B1.n
+pic line -> dotted from A2a.s to B2.n
+
+Create Padding
+        --6-invis
+  C1:   192B--8 Padding
+        --10-invis
+  C2:   --32-dotted Inner layer (unwrapped)
+
+pic line -> from B1.s to C2.nw
+
+Outgoing Onion
+         --6-invis
+  X:    --8 Hop
+        --8 Hop
+        --8 Hop
+        --24-dashed ...
+  Y:    --8 Hop
+
+pic line -> from C1.s to X.n
+pic line dashed from C2.sw to X.ne
+pic line dashed from C2.se to Y.ne
+
+.end
